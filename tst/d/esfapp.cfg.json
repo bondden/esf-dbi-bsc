@@ -1,0 +1,86 @@
+{
+  "schemaVersion":"0.6.0",
+  "schemaChangeLog":[
+    {
+      "v":"0.2.0",
+      "changes":"added buf size for Mdl.bufferize()",
+      "reason":"prf: decreasing memory consumption while reading large json files"
+    },
+    {
+      "v":"0.3.0",
+      "changes":"added parser step for splitting large json data set",
+      "reason":"prf: decreasing memory consumption while writing large json files"
+    },
+    {
+      "v":"0.4.0",
+      "changes":"added che/tbl for Xl.tabularize(), che/str for Xl.restructure()",
+      "reason":"prf: implementing by-row file processing"
+    },
+    {
+      "v":"0.5.0",
+      "changes":"changes according API v.1.0.rc3",
+      "reason":"Req. itms-prc-psr-1.0"
+    },
+    {
+      "v":"0.6.0",
+      "changes":"added single per file description section",
+      "reason":"Escape duplicates, structurize descriptions for better documenting"
+    }
+  ],
+  "measure":{
+    "time":"ms"
+  },
+  "description":{
+    "schemaVersion":"Mandatory field because of its role in checking the esfapp.cfg.json for consistency by .esfrc and tests. Format: SemVer",
+    "pcs":{
+	    "connTmOutMs":"Timeout to retry * wait while connecting to dbms",
+	    "clsDelTmOutMs":"Timeout for batch deleting classes (a class?)"
+    },
+	  "pth":{
+      "description":"Paths. Relative paths are relative to root (rt)",
+      "rt" :"root path",
+      "hst":"history for classes, archived by DBI.archiveClass",
+      "jl" :"Tabular data in Jl format"
+    }
+  },
+  "mode":"tst",
+  "modes":{
+    "tst":{
+      "pcs":{
+	      "totalTmOut":60000,
+	      "dbConnTmOut":3000,
+	      "dbConnRetries":10,
+	      "clsDelTmOut":2500
+      },
+      "pth":{
+        "rt" :"/web/dmn/itms.loc/node_modules/esf-dbi-bsc/tst/d/",
+        "jl" :"jl/",
+	      "hst":"hst/"
+      },
+	    "acc":{
+		    "odb":{
+			    "srv":{
+				    "host": "localhost",
+				    "port": 2424,
+				    "username": "{USER}",
+				    "password": "{PASSWORD}"
+			    },
+			    "usr":{
+				    "name":"esfe",
+				    "username":"{USER}",
+				    "password":"{PASSWORD}"
+			    }
+		    }
+	    },
+      "alg":{
+        "parseExtra":false,
+        "clearPaths":false,
+        "ignoreErrors":[
+          "Unrecognized ExtProp type"
+        ]
+      }
+    },
+    "prd":{
+    }
+  }
+}
