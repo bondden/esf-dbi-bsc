@@ -1,6 +1,6 @@
 {
-  "name": "@bond007/esf-dbi-bsc",
-  "version": "0.2.1",
+  "name": "esf-dbi-bsc",
+  "version": "0.2.2",
   "description": "ESF Basic DB Interface",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/bondden/esf-dbi-bsc.git"
+    "url": "https://github.com/bondden/esf-dbi-bsc.git"
   },
   "keywords": [
     "esf",
@@ -21,8 +21,8 @@
     "OrientJs"
   ],
   "author": "Denis Bondarenko <bond.den@gmail.com>",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/bondden/esf-dbi-bsc#readme",
+  "license": "MIT",
+  "homepage": "https://github.com/bondden/esf-dbi-bsc/blob/master/README.md",
   "devDependencies": {
     "babel": "^5.8.23",
     "chai": "^3.3.0",
@@ -46,7 +46,7 @@
     "semver": "^5.0.3"
   },
   "dependencies": {
-    "@bond007/esf-utl": "^2.0.0",
+    "esf-utl": "^2.0.0",
     "line-by-line": "^0.1.4",
     "orientjs": "^2.0.0"
   }
