@@ -3,13 +3,13 @@
  */
 "use strict";
 
-if(!ESF_UNHDLD_RJ_INTRCPTR || typeof ESF_UNHDLD_RJ_INTRCPTR === 'undefined'){
-  process.on('unhandledRejection', function(reason, p) {
+if(!ESF_UNHDLD_RJ_INTRCPTR||typeof ESF_UNHDLD_RJ_INTRCPTR==='undefined'){
+  process.on('unhandledRejection',function(reason,p){
 
     if(reason.message.match(/Error on parsing command at position #0: Class '[^'\\]+' was not found/ig)){
       console.log('Warning: Conjecture of class absence. Reason: '+reason.message.replace('Error on parsing command at position #0: ',''));
     }else{
-      console.log('\nUnhandled Rejection at: Promise \n', p, ' \nreason: ', reason,'\n');
+      console.log('\nUnhandled Rejection at: Promise \n',p,' \nreason: ',reason,'\n');
       console.trace(p);
     }
 
@@ -18,27 +18,26 @@ if(!ESF_UNHDLD_RJ_INTRCPTR || typeof ESF_UNHDLD_RJ_INTRCPTR === 'undefined'){
 }
 
 var
-  path     =require('path'),
-  fs       =require('fs-extra'),
-  ojs      =require('orientjs')
-;
+  path=require('path'),
+  fs  =require('fs-extra'),
+  ojs =require('orientjs')
+  ;
 
-import * as modUtl from '@bond007/esf-utl';
+import * as modUtl from 'esf-utl';
 
 var
   Utl=modUtl.Utl,
   L  =Utl.log,
   E  =Utl.rejectingError
-;
+  ;
 
 export class DBIBsc {
 
   constructor(){
-    this.db =null;
-    this.cfg=null;
+    this.db          =null;
+    this.cfg         =null;
     this.connAttempts=0;
   }
-
 
   init(cfg){
     var H=this;
@@ -64,7 +63,7 @@ export class DBIBsc {
 
           H.connAttempts++;
 
-          L('Unsuccessful initialization of OrientDB client. ' +
+          L('Unsuccessful initialization of OrientDB client. '+
             'Retrying attempt '+H.connAttempts+' of '+H.cfg.modes[H.cfg.mode].pcs.dbConnRetries+'...');
 
           if(H.connAttempts<H.cfg.modes[H.cfg.mode].pcs.dbConnRetries){
@@ -97,6 +96,7 @@ export class DBIBsc {
 
     });
   }
+
   //todo: cache-independent class existence checking
   classExists(clsName){
     var H=this;
@@ -151,7 +151,7 @@ export class DBIBsc {
   createClass(classData){
     var H=this;
 
-    var _createClassProperty =function(clsPtr,propData){
+    var _createClassProperty=function(clsPtr,propData){
       var H=this;
       return new Promise((rs,rj)=>{
 
@@ -191,17 +191,17 @@ export class DBIBsc {
         });
 
       }).catch((e)=>{
-        
-        if(e.message.indexOf('already exists in current database')!==-1){
+
+        if(e.message.indexOf('already exists in current database')!== -1){
           H.db.class.get(classData.name).then((r2)=>{
             rs(r2);
           }).catch((e2)=>{
             return E(45,'db error',e2,rj);
           });
-        }else{          
-          return E(42,'Error creating class '+classData.name,e,rj);          
+        }else{
+          return E(42,'Error creating class '+classData.name,e,rj);
         }
-        
+
       });
 
     });
@@ -226,29 +226,29 @@ export class DBIBsc {
     return new Promise((rs,rj)=>{
 
       let data={
-        "class"  :{
-          "name"            :null,
-          "shortName"       :null,
+        "class":  {
+          "name":            null,
+          "shortName":       null,
           "defaultClusterId":null,
-          "clusterIds"      :null,
-          "superClass"      :null,
-          "originalName"    :null
+          "clusterIds":      null,
+          "superClass":      null,
+          "originalName":    null
         },
         "records":[]
       };
 
       let dftProp={
-        "name"        :null,
+        "name":        null,
         "originalName":null,
-        "type"        :null,
-        "mandatory"   :null,
-        "readonly"    :null,
-        "notNull"     :null,
-        "collate"     :null,
-        "min"         :null,
-        "max"         :null,
-        "regexp"      :null,
-        "linkedClass" :null
+        "type":        null,
+        "mandatory":   null,
+        "readonly":    null,
+        "notNull":     null,
+        "collate":     null,
+        "min":         null,
+        "max":         null,
+        "regexp":      null,
+        "linkedClass": null
       };
 
       H.db.class.get(className).then((r)=>{
@@ -275,42 +275,43 @@ export class DBIBsc {
           });
 
           //process records
-          H.db.select()
-            .from(className)
-            .all()
-            .then((recs)=>{
+          H.db
+           .select()
+           .from(className)
+           .all()
+           .then((recs)=>{
 
-            recs.forEach((rr)=>{
+             recs.forEach((rr)=>{
 
-              if(rr.parent && rr.parent['@class']===rr['@class']){
-                rr.parent=rr['@class'];
-              }
+               if(rr.parent&&rr.parent['@class']===rr['@class']){
+                 rr.parent=rr['@class'];
+               }
 
-              data.records.push(JSON.parse(JSON.stringify(rr,null,'\t')));
-            });
+               data.records.push(JSON.parse(JSON.stringify(rr,null,'\t')));
+             });
 
-            //save to history
-            //todo: use db to store class versions
-            //todo: support large amount of records with Jl-writer
+             //save to history
+             //todo: use db to store class versions
+             //todo: support large amount of records with Jl-writer
 
-            let filePath=path.resolve(pth+'/'+transactionId+'_'+className+'.json');
+             let filePath=path.resolve(pth+'/'+transactionId+'_'+className+'.json');
 
-            L('Saving archive to '+filePath+' for class '+className+'...');
+             L('Saving archive to '+filePath+' for class '+className+'...');
 
-            fs.writeJSON(filePath,data,(ew)=>{
+             fs.writeJSON(filePath,data,(ew)=>{
 
-              if(ew){
-                E(506,'Error saving archive to '+filePath+' for class '+className,ew,rj);
-              }
+               if(ew){
+                 E(506,'Error saving archive to '+filePath+' for class '+className,ew,rj);
+               }
 
-              L('Saved archive for class '+className+'');
-              rs(className);
+               L('Saved archive for class '+className+'');
+               rs(className);
 
-            });
+             });
 
-            }).catch((e4)=>{
-              E(505,'Error getting records for class '+className,e4,rj);
-            });
+           }).catch((e4)=>{
+             E(505,'Error getting records for class '+className,e4,rj);
+           });
 
         }catch(e1){
           E(504,'Error extracting properties of class '+className,e1,rj);
@@ -318,7 +319,7 @@ export class DBIBsc {
 
       }).catch((e)=>{
 
-        if(e.message.indexOf('No such class:')!==-1){
+        if(e.message.indexOf('No such class:')!== -1){
           L('Warning: no such class '+className,'y');
           rs('No such class: '+className);
         }else{
@@ -331,39 +332,40 @@ export class DBIBsc {
 
   dropClass(vtxName){
     var H=this;
-    return Promise.race([
-      new Promise((rs,rj)=>{
-        let tmOut=H.cfg.modes[H.cfg.mode].pcs.clsDelTmOut;
-        setTimeout(()=>{
-          rs('Warning: class deletion timeout of '+tmOut+' exceeded','em');
-        },tmOut);
-      }),
-      new Promise((rs,rj)=>{
+    return Promise
+      .race([
+        new Promise((rs,rj)=>{
+          let tmOut=H.cfg.modes[H.cfg.mode].pcs.clsDelTmOut;
+          setTimeout(()=>{
+            rs('Warning: class deletion timeout of '+tmOut+' exceeded','em');
+          },tmOut);
+        }),
+        new Promise((rs,rj)=>{
 
-        let q='delete vertex '+vtxName;
+          let q='delete vertex '+vtxName;
 
-        try{
-          H.db.exec(q).then((r)=>{
+          try{
+            H.db.exec(q).then((r)=>{
 
-            if(!r|| !r.hasOwnProperty('results')){
-              return E(523,'q: '+q,new Error('q: '+q),rj);
-            }
+              if(!r|| !r.hasOwnProperty('results')){
+                return E(523,'q: '+q,new Error('q: '+q),rj);
+              }
 
-            H.db.exec('drop class '+vtxName).then((r1)=>{
+              H.db.exec('drop class '+vtxName).then((r1)=>{
 
-              rs(r1);
+                rs(r1);
 
-            }).catch((e1)=>{
-              E(522,'Error dropping '+vtxName,e1,rj);
+              }).catch((e1)=>{
+                E(522,'Error dropping '+vtxName,e1,rj);
+              });
+
             });
+          }catch(e){
+            E(521,'q: '+q,e,rj);
+          }
 
-          });
-        }catch(e){
-          E(521,'q: '+q,e,rj);
-        }
-
-      })
-    ]);
+        })
+      ]);
   }
 
   truncateClass(name){

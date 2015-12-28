@@ -1,4 +1,17 @@
 # ESF DBIBsc Module
+
+## Prerequisites
+1. [OrientDB](http://orientdb.com) should be installed
+2. At least test database of `plocal` storage type should be created, if not exist. For example:
+  ```shell
+  bash {ORIENTDB_HOME}/bin/console.sh
+  create database plocal:{ORIENTDB_DEFAULT_DBS_HOME}/esfe
+  disconnect
+  ```
+  curly braces should be replaced with according local installation values.
+  The default user/password for a newly created DB is admin/admin accordingly.
+3. In `tst/d/esfapp.cfg` strings `"{USER}"`, `"{PASSWORD}"` should be replaced with appropriate credentials. 
+
 ## Road map
 
 Version | Functionality                                                                                         | Status
@@ -19,19 +32,19 @@ ReqId             | Requirement                                                 
 ----------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------
 esf-dbi-bsc-0.1   | It should implement Graph API                                                                       |
 esf-dbi-bsc-0.1.1 | Every class should extend V or Basic                                                                |
-esf-dbi-bsc-0.2   | It run basic db operations: creating class from JS object, checking class existence, removing class | ```createClassIfNotExists```, ```classExists```, ```createClass```
-esf-dbi-bsc-0.3   | There should be a method to insert data to class                                                    | ```insertRecords```
+esf-dbi-bsc-0.2   | It run basic db operations: creating class from JS object, checking class existence, removing class | `createClassIfNotExists`, `classExists`, `createClass`
+esf-dbi-bsc-0.3   | There should be a method to insert data to class                                                    | `insertRecords`
 esf-dbi-bsc-0.3.1 | The method should accept either a recordData, or an array of recordData                             |
-esf-dbi-bsc-0.4   | It should archive class to JSON file before dropping                                                | ```archiveClass```, ```dropClass```
-esf-dbi-bsc-0.5   | It run batch db operations: class creation, droppig, archiving                                      | ```archiveClasses```, ```dropClasses```, ```createClasses```
-esf-dbi-bsc-0.6   | It should restore archived class from JSON file                                                     | ```restoreClass```
-esf-dbi-bsc-0.7   | It should archive class to DB file before dropping                                                  | ```archiveClass```
-esf-dbi-bsc-0.8   | It should restore class from DB                                                                     | ```restoreClass```
+esf-dbi-bsc-0.4   | It should archive class to JSON file before dropping                                                | `archiveClass`, `dropClass`
+esf-dbi-bsc-0.5   | It run batch db operations: class creation, droppig, archiving                                      | `archiveClasses`, `dropClasses`, `createClasses`
+esf-dbi-bsc-0.6   | It should restore archived class from JSON file                                                     | `restoreClass`
+esf-dbi-bsc-0.7   | It should archive class to DB file before dropping                                                  | `archiveClass`
+esf-dbi-bsc-0.8   | It should restore class from DB                                                                     | `restoreClass`
 itms-prc-psr-1.0  | It implement API v.1.0                                                                              | _
 
 ## API v.1.0
 
-```cs
+```javascript
 object  db
 Promise init(object cfg)
 // single class operations

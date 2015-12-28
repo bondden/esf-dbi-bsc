@@ -2,16 +2,14 @@
  * Created by Denis Bondarenko <bond.den@gmail.com> on 29.06.2015.
  */
 'use strict';
-require('babel/polyfill');
 
 var
-  assert   = require('chai').assert,
-  cc       = require('cli-color'),
-  path     = require('path'),
-  fs       = require('fs-extra'),
+  assert=require('chai').assert,
+  path  =require('path'),
+  fs    =require('fs-extra'),
 
-  App      =require('../index.js').DBIBsc
-;
+  App   =require('../index.js').DBIBsc
+  ;
 
 function p(file){
   return path.resolve('tst/d/'+file);
@@ -64,7 +62,7 @@ suite('App Suite',function(){
   suite('Initialization',function(){
     this.timeout(4000);
 
-    test('new DBIBsc() It should create the app instance',function(done){
+    test('new DBIBsc() It should create the app instance',(done)=>{
       app=new App();
 
       assert.isObject(app,'app should be an object');
@@ -72,8 +70,8 @@ suite('App Suite',function(){
       done();
     });
 
-    test('init(cfg) It should initialize db connection',function(done){
-      app.init(cfg).then(function(r){
+    test('init(cfg) It should initialize db connection',(done)=>{
+      app.init(cfg).then((r)=>{
         assert.property(app.cfg,'modes','cfg should have modes section');
         assert.property(app.cfg.modes[app.cfg.mode],'acc','should have access config section');
         assert.property(app.cfg.modes[app.cfg.mode].acc,'odb','should have db access config section');
@@ -81,18 +79,18 @@ suite('App Suite',function(){
         assert.property(app.cfg.modes[app.cfg.mode].acc.odb,'usr','should have usr db access config section');
         assert.isObject(app.db,'db should be an object');
         done();
-      }).catch(function(e){
+      }).catch((e)=>{
         done(e);
       });
     });
 
-    test('It should run a test query to db',function(done){
-      app.db.exec("select count(*) from OUser").then(function(r){
+    test('It should run a test query to db',(done)=>{
+      app.db.exec("select count(*) from OUser").then((r)=>{
         assert.isObject(r,'db should be an object');
         assert.property(r,'results','r should have results property');
         assert.equal(r.results[0].content[0].value.count,3,'count of user should be 3');
         done();
-      }).catch(function(e){
+      }).catch((e)=>{
         done(e);
       });
     });
@@ -104,14 +102,14 @@ suite('App Suite',function(){
 
     var
       tstDat,
-      tstClassNames=[],
+      tstClassNames   =[],
       tstTransactionId='tstTrn',
-      tstClassName='V',
+      tstClassName    ='V',
       hstFile,
       hstPath
-    ;
+      ;
 
-    suiteSetup(function(done){
+    suiteSetup((done)=>{
 
       hstPath=p(cfg.modes['tst'].pth.hst)+'/';
       hstFile=hstPath+'/'+tstTransactionId+'_'+tstClassName+'.json';
@@ -153,20 +151,20 @@ suite('App Suite',function(){
 
     });
 
-    test('classExists(V): existent',function(done){
+    test('classExists(V): existent',(done)=>{
 
-      app.classExists('V').then(function(r){
+      app.classExists('V').then((r)=>{
         assert.equal(r,true,'class V exists');
         done();
-      }).catch(function(e){
+      }).catch((e)=>{
         done(e);
       });
 
     });
 
-    test('classExists(SomeNonExistentClass): non-existent',function(done){
+    test('classExists(SomeNonExistentClass): non-existent',(done)=>{
 
-      app.classExists('SomeNonExistentClass').then(function(r){
+      app.classExists('SomeNonExistentClass').then((r)=>{
         assert.equal(r,false,'class SomeNonExistentClass does not exist');
         done();
       }).catch(function(e){
@@ -175,107 +173,107 @@ suite('App Suite',function(){
 
     });
 
-    test('createClass(classData)',function(done){
+    test('createClass(classData)',(done)=>{
 
-      app.db.exec('drop class '+tmpClsDat.name).then(function(r0){
+      app.db.exec('drop class '+tmpClsDat.name).then((r0)=>{
 
-        app.createClass(tmpClsDat).then(function(r){
+        app.createClass(tmpClsDat).then((r)=>{
           assert.isObject(r,'r should be an object');
           assert.property(r,'name','should have prop name');
           assert.equal(r.name,tmpClsDat.name,'class name should be '+tmpClsDat.name);
           done();
-        }).catch(function(e){
+        }).catch((e)=>{
           done(e);
         });
 
-      }).catch(function(e0){
+      }).catch((e0)=>{
         done(e0);
       });
 
     });
 
-    test('createClassIfNotExists(classData)',function(done){
+    test('createClassIfNotExists(classData)',(done)=>{
 
-      app.db.exec('drop class '+tmpClsDat.name).then(function(r0){
+      app.db.exec('drop class '+tmpClsDat.name).then((r0)=>{
 
-        app.createClassIfNotExists(tmpClsDat).then(function(r){
+        app.createClassIfNotExists(tmpClsDat).then((r)=>{
           assert.isObject(r,'r should be an object');
           assert.property(r,'name','should have prop name');
           assert.equal(r.name,tmpClsDat.name,'class name should be '+tmpClsDat.name);
           done();
-        }).catch(function(e){
+        }).catch((e)=>{
           done(e);
         });
 
-      }).catch(function(e0){
+      }).catch((e0)=>{
         done(e0);
       });
 
     });
 
-    test('archiveClass(name, transactionId)',function(done){
-        app.archiveClass(tstClassName,tstTransactionId,hstPath).then(function(r){
+    test('archiveClass(name, transactionId)',(done)=>{
+      app.archiveClass(tstClassName,tstTransactionId,hstPath).then((r)=>{
 
-          fs.readFile(hstFile,{encoding:'utf8'},(e,r)=>{
-            if(e){
-              done(e);
-              return;
-            }
+        fs.readFile(hstFile,{encoding:'utf8'},(e,r)=>{
+          if(e){
+            done(e);
+            return;
+          }
 
-            let d=JSON.parse(r);
-            assert.isObject(d,'file stores an object');
-            assert.property(d,'class','with `class` prop');
-            assert.property(d.class,'name','with `name` prop');
-            assert.equal(d.class.name,tstClassName,'that is '+tstClassName);
+          let d=JSON.parse(r);
+          assert.isObject(d,'file stores an object');
+          assert.property(d,'class','with `class` prop');
+          assert.property(d.class,'name','with `name` prop');
+          assert.equal(d.class.name,tstClassName,'that is '+tstClassName);
 
-            done();
-
-          });
-
-        }).catch(function(e){
-          done(e);
-        });
-
-    });
-
-    test.skip('insertRecords(records)',function(done){
-
-    });
-
-    test('dropClass(name)',function(done){
-
-      app.createClassIfNotExists(tmpClsDat).then(function(r){
-
-        app.dropClass(tmpClsDat.name).then(function(r){
-          console.log(r);
           done();
-        }).catch(function(e){
-          done(e);
+
         });
 
-      }).catch(function(e){
+      }).catch((e)=>{
         done(e);
       });
 
     });
 
-    test.skip('restoreClass(archiveId)',function(done){
+    test.skip('insertRecords(records)',(done)=>{
 
     });
 
-    test.skip('truncateClass(name)',function(done){
+    test('dropClass(name)',(done)=>{
+
+      app.createClassIfNotExists(tmpClsDat).then((r)=>{
+
+        app.dropClass(tmpClsDat.name).then((r)=>{
+          console.log(r);
+          done();
+        }).catch((e)=>{
+          done(e);
+        });
+
+      }).catch((e)=>{
+        done(e);
+      });
 
     });
 
-    test.skip('archiveClasses(classNames)',function(done){
+    test.skip('restoreClass(archiveId)',(done)=>{
 
     });
 
-    test.skip('dropClasses(classNames)',function(done){
+    test.skip('truncateClass(name)',(done)=>{
 
     });
 
-    test.skip('createClasses(data)',function(done){
+    test.skip('archiveClasses(classNames)',(done)=>{
+
+    });
+
+    test.skip('dropClasses(classNames)',(done)=>{
+
+    });
+
+    test.skip('createClasses(data)',(done)=>{
 
     });
 

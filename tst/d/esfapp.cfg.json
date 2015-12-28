@@ -24,7 +24,7 @@
     {
       "v":"0.6.0",
       "changes":"added single per file description section",
-      "reason":"Escape duplicates, structurize descriptions for better documenting"
+      "reason":"Escape duplicates, structure descriptions for better documenting"
     }
   ],
   "measure":{
@@ -53,7 +53,7 @@
 	      "clsDelTmOut":2500
       },
       "pth":{
-        "rt" :"/web/dmn/itms.loc/node_modules/esf-dbi-bsc/tst/d/",
+        "rt" :"tst/d/",
         "jl" :"jl/",
 	      "hst":"hst/"
       },
